@@ -2,7 +2,7 @@
 
 Finds soccer players whose on-ball contribution is worth more than their market value.
 
-Built on StatsBomb open event data (2015/16, Big 5 European leagues) and Transfermarkt market values. It uses a custom expected goals (xG) model and an Expected Threat (xT) model, then checks its picks against what actually happened to those players' values in the next two years.
+Built on StatsBomb open event data (2015/16 Premier League, La Liga, Serie A, Ligue 1, plus Leverkusen's Bundesliga matches) and Transfermarkt market values. It uses a custom expected goals (xG) model and an Expected Threat (xT) model, then checks its picks against what actually happened to those players' values in the next two years.
 
 > Live demo, screenshots and findings will go here once deployed. See `BLUEPRINT.md` for the full plan.
 
@@ -13,8 +13,8 @@ python -m venv .venv
 .venv\Scripts\activate          # Windows
 pip install -r requirements.txt
 docker compose up -d            # starts Postgres
-python -m pipeline.ingest_statsbomb --league "Premier League"
-python -m pipeline.xg_model
+python -m pipeline.ingest_statsbomb   # all five leagues, about 15 to 20 minutes
+python -m pipeline.run_all            # xG, xT and the player table
 uvicorn api.main:app --reload
 ```
 

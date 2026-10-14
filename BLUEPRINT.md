@@ -7,7 +7,7 @@ Owner NaingHtooChun · Started Oct 13, 2026 · Target finish Nov 9, 2026 (polish
 A web app that finds soccer players who create more attacking value than their market price suggests. It scores every player in the 2015/16 Big 5 European leagues with my own xG and Expected Threat models, compares that with their Transfermarkt value, and then checks whether the players it flagged really did rise in value two years later.
 
 One line for the resume
-> Built a soccer scouting app that scores [N] players across the Big 5 leagues with custom xG and Expected Threat models and flags undervalued players, backtested against real market values two years later.
+> Built a soccer scouting app that scores 1,355 players across four top European leagues with custom xG and Expected Threat models and flags undervalued players, backtested against real market values two years later.
 
 ## 2. Why this stands out
 
@@ -23,7 +23,9 @@ One line for the resume
 | StatsBomb open data | Every event (passes, carries, shots) for 2015/16 Premier League, La Liga, Bundesliga, Serie A, Ligue 1 | `statsbombpy` Python library, free, no key needed |
 | transfermarkt-datasets (dcaribou) | `players.csv` and `player_valuations.csv` with value history | GitHub or Kaggle ("player-scores"), free CSVs |
 
-Why 2015/16? It is the only full season of all five leagues in StatsBomb's free data, and it is old enough to check values two years later.
+Why 2015/16? It is the only recent season with full league coverage in StatsBomb's free data, and it is old enough to check values two years later.
+
+Correction (week 2). The Bundesliga 2015/16 in the free data only has Bayer Leverkusen's 34 matches. The player table uses the four full leagues (Premier League, La Liga, Serie A, Ligue 1). All five are still used to train xG and xT.
 
 ## 4. How it works
 
@@ -94,7 +96,7 @@ undervalued-player-finder/
 Plan on about 10 to 12 hours a week alongside classes.
 
 ### Week 1 (Oct 13 to Oct 19) Set up and explore
-- [x] Install Python 3.12, Git, Docker Desktop, VS Code
+- [x] Install Python 3.12, Git, VS Code (Docker Desktop moved to week 3, when the database is needed)
 - [x] `git init`, push to a public GitHub repo, confirm CI runs green
 - [x] Create a virtual environment and install requirements
 - [x] Run `python -m pipeline.ingest_statsbomb` (start with one league to test)
@@ -103,11 +105,11 @@ Plan on about 10 to 12 hours a week alongside classes.
 - Done when one league is downloaded and xG runs end to end
 
 ### Week 2 (Oct 20 to Oct 26) Models and metrics
-- [ ] Download all five leagues
-- [ ] Add freeze-frame features to xG and compare with StatsBomb
-- [ ] Fit the xT grid and draw it as a heatmap
-- [ ] Build `player_metrics.py` (minutes, npxG, xA, xT per 90)
-- [ ] Write tests for minutes played and per 90 maths
+- [x] Download all five leagues
+- [x] Add freeze-frame features to xG and compare with StatsBomb
+- [x] Fit the xT grid and draw it as a heatmap
+- [x] Build `player_metrics.py` (minutes, npxG, xA, xT per 90)
+- [x] Write tests for minutes played and per 90 maths
 - Done when a table of every 900+ minute player with metrics exists
 
 ### Week 3 (Oct 27 to Nov 2) Market values and backtest

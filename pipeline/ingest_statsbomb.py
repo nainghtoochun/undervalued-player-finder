@@ -38,6 +38,14 @@ COORD_COLUMNS = {
 JSON_COLUMNS = {"shot_freeze_frame", "tactics", "related_events"}
 
 
+def _to_json(v):
+    if isinstance(v, str):  # already JSON text, keep it
+        return v
+    if isinstance(v, (list, dict)):
+        return json.dumps(v)
+    return None
+
+
 def _is_text(s: pd.Series) -> bool:
     return pd.api.types.is_object_dtype(s) or pd.api.types.is_string_dtype(s)
 
@@ -53,7 +61,7 @@ def _save(df: pd.DataFrame, path, matches_per_part: int | None = None) -> None:
         if col in COORD_COLUMNS:
             df[col] = df[col].apply(lambda v: [float(x) for x in v] if isinstance(v, list) else None)
         elif col in JSON_COLUMNS:
-            df[col] = df[col].apply(lambda v: json.dumps(v) if isinstance(v, (list, dict)) else None)
+            df[col] = df[col].apply(_to_json)
         elif _is_text(df[col]) and df[col].dropna().map(type).eq(bool).all():
             df[col] = df[col].astype("boolean")  # flags like under_pressure: True or missing
         elif _is_text(df[col]):
@@ -86,17 +94,30 @@ def download_league(name: str, competition_id: int, workers: int = 4) -> None:
     print(f"saved {name}: {len(events):,} events -> {out.name}/")
 
 
-def load_events(leagues: list[str] | None = None) -> pd.DataFrame:
-    """Read downloaded leagues back into one DataFrame."""
+def load_events(leagues: list[str] | None = None, columns: list[str] | None = None,
+                types: list[str] | None = None) -> pd.DataFrame:
+    """Read downloaded leagues back into one DataFrame.
+
+    Pass `columns` to load only what you need, and `types` (like ["Shot"]) to keep
+    only some event types. All five leagues with every column is about
+    5 million rows x 120 columns, too big for most laptops.
+    """
     names = leagues or list(COMPETITIONS)
     frames = []
     for name in names:
         path = RAW_SB / f"{COMPETITIONS[name]}_{SEASON_ID}_events"
-        if path.exists():
-            frames.extend(pd.read_parquet(f) for f in sorted(path.glob("*.parquet")))
+        for f in sorted(path.glob("*.parquet")):
+            filters = [("type", "in", types)] if types else None
+            part = pd.read_parquet(f, columns=columns, filters=filters)
+            part["league"] = name
+            frames.append(part)
     if not frames:
         raise FileNotFoundError("no events downloaded yet, run pipeline.ingest_statsbomb first")
     return pd.concat(frames, ignore_index=True)
+
+
+def downloaded_leagues() -> list[str]:
+    return [n for n, cid in COMPETITIONS.items() if (RAW_SB / f"{cid}_{SEASON_ID}_events").exists()]
 
 
 if __name__ == "__main__":

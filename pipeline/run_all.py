@@ -1,9 +1,16 @@
-"""Run the full pipeline end to end. Fill in as each step is built."""
+"""Run the pipeline end to end. More steps get added each week.
+
+Run: python -m pipeline.run_all
+"""
+import runpy
+
+STEPS = [
+    "pipeline.xg_model",        # week 2: train and compare xG models
+    "pipeline.player_metrics",  # week 2: xT grid and per 90 player table
+    # week 3: pipeline.ingest_transfermarkt, pipeline.value_model, load to Postgres
+]
 
 if __name__ == "__main__":
-    # 1. load events from data/raw/statsbomb
-    # 2. train xG, fit xT
-    # 3. build player metrics
-    # 4. join market values, fit value model, backtest
-    # 5. load results into Postgres
-    raise SystemExit("pipeline not built yet, see BLUEPRINT.md")
+    for step in STEPS:
+        print(f"\n===== {step} =====")
+        runpy.run_module(step, run_name="__main__")

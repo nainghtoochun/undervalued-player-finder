@@ -16,6 +16,11 @@ COMPETITIONS = {
     "Ligue 1": 7,
 }
 
+# The Bundesliga 2015/16 in StatsBomb open data only has Bayer Leverkusen's 34 matches,
+# not the full 306. We use it to train xG and xT (more shots and passes help),
+# but leave it out of the player table, where it would only cover one club fairly.
+PLAYER_LEAGUES = ["Premier League", "La Liga", "Serie A", "Ligue 1"]
+
 # StatsBomb pitch is 120 x 80, attacking left to right.
 PITCH_X, PITCH_Y = 120, 80
 GOAL_X, GOAL_Y = 120, 40
