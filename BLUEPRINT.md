@@ -94,9 +94,9 @@ undervalued-player-finder/
 Plan on about 10 to 12 hours a week alongside classes.
 
 ### Week 1 (Oct 13 to Oct 19) Set up and explore
-- [ ] Install Python 3.12, Git, Docker Desktop, VS Code
-- [ ] `git init`, push to a public GitHub repo, confirm CI runs green
-- [ ] Create a virtual environment and install requirements
+- [x] Install Python 3.12, Git, Docker Desktop, VS Code
+- [x] `git init`, push to a public GitHub repo, confirm CI runs green
+- [x] Create a virtual environment and install requirements
 - [x] Run `python -m pipeline.ingest_statsbomb` (start with one league to test)
 - [x] In a notebook, plot shots and passes on a pitch with mplsoccer
 - [x] Train the first xG model and print its report
