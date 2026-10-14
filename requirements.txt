@@ -1,0 +1,15 @@
+pandas>=2.2
+pyarrow>=16
+requests>=2.32
+joblib>=1.4
+numpy>=1.26
+statsbombpy>=1.13
+scikit-learn>=1.5
+mplsoccer>=1.4
+rapidfuzz>=3.9
+sqlalchemy>=2.0
+psycopg[binary]>=3.2
+fastapi>=0.115
+uvicorn[standard]>=0.30
+pytest>=8.3
+ruff>=0.6
