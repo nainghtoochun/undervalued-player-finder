@@ -1,5 +1,5 @@
 # Undervalued Player Finder
-
+Hi, I am Naing Htoo Chun.
 Finds soccer players whose on-ball contribution is worth more than their market value.
 
 Built on StatsBomb open event data (2015/16 Premier League, La Liga, Serie A, Ligue 1, plus Leverkusen's Bundesliga matches) and Transfermarkt market values. It uses a custom expected goals (xG) model and an Expected Threat (xT) model, then checks its picks against what actually happened to those players' values in the next two years.
