@@ -5,6 +5,7 @@ joblib>=1.4
 numpy>=1.26
 statsbombpy>=1.13
 scikit-learn>=1.5
+scipy>=1.13
 mplsoccer>=1.4
 rapidfuzz>=3.9
 sqlalchemy>=2.0

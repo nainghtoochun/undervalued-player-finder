@@ -14,3 +14,11 @@ Write one short entry each time you make a real choice. Interviewers love this f
 | 2026-10-14 | Minutes played worked out from events (lineups, subs, red cards, injuries) | Everything needed is already in the event data, no extra download | StatsBomb lineups endpoint (one extra request per match) |
 | 2026-10-14 | xT counts only successful open play passes and carries | Corners and free kicks would credit set-piece takers for dead-ball positions | All passes |
 | 2026-10-14 | Load only the columns and event types each step needs | All leagues with every column do not fit in laptop memory | Load everything (crashed the cloud download once) |
+| 2026-10-14 | Match players inside each club, using nicknames from StatsBomb lineups | Event data has full legal names ("Jorge Resurrección Merodio") while Transfermarkt uses "Koke". Nicknames took the match rate from 94.7% to 99.9% | Matching on names alone |
+| 2026-10-14 | Pair clubs by shared players, not just names | AC Milan and Inter Milan look the same once "AC" is removed, and names alone swapped them | Club names only |
+| 2026-10-14 | Give each StatsBomb club one name by team id | StatsBomb spells Marseille and Caen two ways | Leave as is (split those squads in two) |
+| 2026-10-14 | Club is not a value model feature, except relegation | A great season at a small club is the signal we want. Relegated players drop a division, which the market rightly prices in | Add club strength (would hide the bargains) |
+| 2026-10-14 | Out-of-fold predictions for the value gap | A model that saw a player's price would just copy it | In-sample predictions |
+| 2026-10-14 | Ridge regression for fair value | Higher cross-validated R2 than gradient boosting (0.62 vs 0.60) and easy to explain | Gradient boosting |
+| 2026-10-14 | Judge the backtest after age, position, league and starting price | Young and cheap players rise anyway, so raw growth would flatter the model | Raw value growth only |
+| 2026-10-14 | Leave goalkeepers out of the value model | xG, xA and xT say little about keepers | Keep them (noise) |

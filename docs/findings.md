@@ -40,3 +40,32 @@ Freeze frames closed about 83% of the gap to StatsBomb (0.0165 down to 0.0028 lo
 **Player table.** 1,355 players with 900+ minutes in the four full leagues. Top three by xT per 90 are Neymar (0.42), Di María (0.41) and Messi (0.41).
 
 **Sanity checks.** Two teams' minutes add up to about 2,047 per match (2 x 11 players x about 93 minutes). Messi had 23 non-penalty La Liga goals, which matches his real 26 minus 3 penalties.
+
+## Week 3 log
+
+**Matching.** 1,353 of 1,355 regular players (99.9%) linked to Transfermarkt. Players who changed league in January matched to the same Transfermarkt id in both leagues, a good sign the matching is right.
+
+**Fair value model.** 1,249 outfield players with a summer 2016 market value. Ridge regression, 5-fold out-of-fold predictions.
+
+| Model | R2 on log value | Median price error |
+| --- | --- | --- |
+| Ridge (chosen) | 0.620 | 49% |
+| Gradient boosting | 0.601 | 49% |
+
+**Backtest, summer 2016 to summer 2018.** Top 50 by value gap against everyone else (1,180 players with a 2018 value; 4 of the top 50 had none).
+
+| Group | Median value change | Share whose value rose |
+| --- | --- | --- |
+| Top 50 flagged | +21% | 54% |
+| Everyone else | -17% | 35% |
+
+After accounting for age, position, league and starting price, flagged players gained **+47% more** value (95% bootstrap range +19% to +81%). The effect gets stronger as the list gets shorter (top 25 +73%, top 100 +25%, top 200 +18%), and it rises steadily across the five value gap groups. See `data/processed/backtest.png`.
+
+**Hits.** Luis Alberto (Deportivo, EUR 4m to EUR 35m), Roberto Inglese (Chievo, EUR 1m to EUR 10m), Cristiano Piccini (Betis, EUR 0.7m to EUR 7.5m).
+**Misses.** Older players the model likes, like Massimo Gobbi (35), whose value kept falling.
+
+**Limitations.**
+- Market values are Transfermarkt estimates, not transfer fees.
+- Part of the effect may be prices that were simply too low by chance moving back up. Controlling for starting price reduces but does not remove this.
+- One season of stats, so a lucky season can look like a bargain.
+- Spearman correlation between value gap and extra growth across all players is only 0.10. The signal is in the extreme tail, not everywhere.

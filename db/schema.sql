@@ -1,23 +1,32 @@
+-- Undervalued Player Finder schema (Postgres 16)
+-- Safe to run many times. pipeline/load_db.py runs it, then reloads every table.
+
 CREATE TABLE IF NOT EXISTS players (
     player_id        INTEGER PRIMARY KEY,   -- StatsBomb player id
-    name             TEXT NOT NULL,
-    team             TEXT,
-    league           TEXT,
-    position_group   TEXT,                   -- GK, DEF, MID, FWD
-    birth_date       DATE,
-    tm_player_id     INTEGER                 -- Transfermarkt id after matching
+    name             TEXT NOT NULL,         -- full name from StatsBomb
+    nickname         TEXT,                  -- the name fans use ("Koke")
+    team             TEXT NOT NULL,         -- club with the most minutes in 2015/16
+    league           TEXT NOT NULL,
+    position         TEXT,
+    position_group   TEXT,                  -- GK, DEF, MID, FWD
+    tm_player_id     INTEGER UNIQUE,        -- Transfermarkt id, NULL if not matched
+    birth_date       DATE
 );
 
 CREATE TABLE IF NOT EXISTS player_season_metrics (
-    player_id        INTEGER REFERENCES players(player_id),
+    player_id        INTEGER NOT NULL REFERENCES players(player_id),
+    league           TEXT NOT NULL,         -- a January transfer gives a player two rows
     season           TEXT NOT NULL,
-    minutes          INTEGER NOT NULL,
+    team             TEXT NOT NULL,
+    minutes          REAL NOT NULL,
     npxg_p90         REAL,
     xa_p90           REAL,
     xt_pass_p90      REAL,
     xt_carry_p90     REAL,
-    xt_total_p90     REAL,
-    PRIMARY KEY (player_id, season)
+    xt_p90           REAL,
+    np_goals_p90     REAL,
+    np_shots_p90     REAL,
+    PRIMARY KEY (player_id, league, season)
 );
 
 CREATE TABLE IF NOT EXISTS valuations (
@@ -28,11 +37,16 @@ CREATE TABLE IF NOT EXISTS valuations (
 );
 
 CREATE TABLE IF NOT EXISTS player_value_scores (
-    player_id            INTEGER REFERENCES players(player_id),
+    player_id            INTEGER PRIMARY KEY REFERENCES players(player_id),
     season               TEXT NOT NULL,
-    market_value_eur     BIGINT,
-    predicted_value_eur  BIGINT,
-    value_gap_pct        REAL,              -- (predicted - actual) / actual
-    value_2y_later_eur   BIGINT,            -- for the backtest
-    PRIMARY KEY (player_id, season)
+    age                  REAL,
+    relegated            BOOLEAN NOT NULL,
+    value_2016_eur       BIGINT NOT NULL,
+    predicted_value_eur  BIGINT NOT NULL,
+    value_gap_pct        REAL NOT NULL,      -- (predicted - actual) / actual, above 0 = looks cheap
+    gap_rank             INTEGER NOT NULL,   -- 1 = biggest bargain
+    value_2018_eur       BIGINT              -- NULL if retired or left the data
 );
+
+CREATE INDEX IF NOT EXISTS idx_scores_rank ON player_value_scores (gap_rank);
+CREATE INDEX IF NOT EXISTS idx_metrics_xt ON player_season_metrics (xt_p90 DESC);

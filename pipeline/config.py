@@ -27,5 +27,7 @@ GOAL_X, GOAL_Y = 120, 40
 POST_LOW_Y, POST_HIGH_Y = 36, 44
 
 MIN_MINUTES = 900            # ignore players below this
-VALUATION_DATE = "2016-07-01"  # market value snapshot after the season
-BACKTEST_DATE = "2018-07-01"   # value two years later
+VALUATION_DATE = "2016-08-31"  # market value right after the season (latest on or before)
+VALUATION_WINDOW_START = "2016-01-01"
+BACKTEST_DATE = "2018-08-31"    # value two summers later
+BACKTEST_WINDOW_START = "2018-01-01"

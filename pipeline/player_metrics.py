@@ -21,7 +21,7 @@ METRIC_TYPES = ["Starting XI", "Substitution", "Foul Committed", "Bad Behaviour"
                 "Half End", "Shot", "Pass", "Carry"]
 
 METRIC_COLUMNS = sorted(set(SHOT_COLUMNS + XT_COLUMNS + [
-    "minute", "second", "period", "position", "pass_type", "tactics",
+    "minute", "second", "period", "position", "pass_type", "tactics", "team_id",
     "substitution_replacement_id", "substitution_replacement",
     "foul_committed_card", "bad_behaviour_card", "player_off_permanent",
 ]))
@@ -75,6 +75,14 @@ def minutes_played(events: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def one_name_per_team(events: pd.DataFrame) -> pd.Series:
+    """StatsBomb sometimes spells a club two ways ("Marseille", "Olympique de Marseille").
+    Use the team id to give every club its most common name."""
+    names = events.loc[events["type"] == "Starting XI"].groupby("team_id")["team"].agg(
+        lambda s: s.value_counts().index[0])
+    return events["team_id"].map(names).fillna(events["team"])
+
+
 # ---------- positions ----------
 
 def position_group(name) -> str:
@@ -104,6 +112,7 @@ def main_position(events: pd.DataFrame) -> pd.DataFrame:
 
 def player_totals(events: pd.DataFrame, xg_model, xg_cols, xt_grid) -> pd.DataFrame:
     """Season totals for one league (minutes, npxG, xA, xT, goals)."""
+    events = events.assign(team=one_name_per_team(events))
     mins = minutes_played(events)
 
     shots = non_penalty_shots(events)

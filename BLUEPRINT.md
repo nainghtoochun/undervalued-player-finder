@@ -113,11 +113,11 @@ Plan on about 10 to 12 hours a week alongside classes.
 - Done when a table of every 900+ minute player with metrics exists
 
 ### Week 3 (Oct 27 to Nov 2) Market values and backtest
-- [ ] Download Transfermarkt CSVs
-- [ ] Match players by name and club with rapidfuzz, fix misses by hand, record the match rate
-- [ ] Fit the value model with cross validation
-- [ ] Run the backtest and write the result in `docs/findings.md`
-- [ ] Load everything into Postgres
+- [x] Download Transfermarkt CSVs
+- [x] Match players by name and club with rapidfuzz, fix misses by hand, record the match rate
+- [x] Fit the value model with cross validation
+- [x] Run the backtest and write the result in `docs/findings.md`
+- [x] Load everything into Postgres
 - Done when the backtest number exists, whatever it says
 
 ### Week 4 (Nov 3 to Nov 9) Ship it
