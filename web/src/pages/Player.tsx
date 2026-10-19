@@ -46,12 +46,21 @@ export default function PlayerPage() {
   const { byId, loadHistory } = useData();
   const player = byId.get(Number(id));
   const [history, setHistory] = useState<{ t: number; v: number }[] | null>(null);
+  const [historyError, setHistoryError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
+    let current = true; // ignore answers that arrive after the user moved to another player
     window.scrollTo(0, 0);
     setHistory(null);
-    loadHistory().then((h) => setHistory((h[String(id)] ?? []).map(([d, v]) => ({ t: Date.parse(d), v }))));
-  }, [id, loadHistory]);
+    setHistoryError(null);
+    loadHistory()
+      .then((h) => current && setHistory((h[String(id)] ?? []).map(([d, v]) => ({ t: Date.parse(d), v }))))
+      .catch((e: Error) => current && setHistoryError(e.message));
+    return () => {
+      current = false;
+    };
+  }, [id, loadHistory, attempt]);
 
   if (!player) return <p className="text-ink-2">Player not found. <Link className="text-accent underline" to="/explore">Back to the explorer</Link></p>;
   const p = player;
@@ -91,7 +100,15 @@ export default function PlayerPage() {
       <div className="mt-2 grid gap-6 lg:grid-cols-2">
         <Section title="Market value over time" subtitle="Transfermarkt estimates. Dashed line shows the model's fair value in 2016.">
           <div className="h-72 rounded-xl border border-line bg-panel p-4">
-            {history == null ? (
+            {historyError ? (
+              <div className="py-16 text-center text-sm text-ink-2">
+                <p>Could not load the value history. {historyError}</p>
+                <button onClick={() => setAttempt((a) => a + 1)}
+                  className="mt-3 rounded-md border border-line px-3 py-1.5 font-medium text-ink hover:bg-surface">
+                  Try again
+                </button>
+              </div>
+            ) : history == null ? (
               <p className="py-20 text-center text-sm text-ink-3">Loading…</p>
             ) : history.length === 0 ? (
               <p className="py-20 text-center text-sm text-ink-3">No value history for this player.</p>

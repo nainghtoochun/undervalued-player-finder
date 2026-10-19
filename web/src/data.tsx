@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 
 export type Percentiles = Record<
   "npxg_p90" | "xa_p90" | "xt_p90" | "xt_pass_p90" | "xt_carry_p90" | "np_shots_p90",
@@ -94,8 +94,15 @@ export function DataProvider({ children }: { children: ReactNode }) {
       .catch((e: Error) => setError(e.message));
   }, []);
 
-  // value history is only needed on player pages, so it loads on first use
-  const loadHistory = () => (historyPromise ??= getJson<History>("history.json"));
+  // value history is only needed on player pages, so it loads on first use.
+  // A failed download is forgotten, so the next try fetches it again.
+  const loadHistory = useCallback(() => {
+    historyPromise ??= getJson<History>("history.json").catch((e: Error) => {
+      historyPromise = null;
+      throw e;
+    });
+    return historyPromise;
+  }, []);
 
   return (
     <DataContext.Provider value={{ players, summary, error, byId, loadHistory }}>{children}</DataContext.Provider>
