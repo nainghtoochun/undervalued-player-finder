@@ -1,0 +1,3 @@
+# Count the notebook as documentation so GitHub shows Python as the main language
+*.ipynb linguist-documentation
+web/public/data/** linguist-generated
