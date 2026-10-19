@@ -22,3 +22,7 @@ Write one short entry each time you make a real choice. Interviewers love this f
 | 2026-10-14 | Ridge regression for fair value | Higher cross-validated R2 than gradient boosting (0.62 vs 0.60) and easy to explain | Gradient boosting |
 | 2026-10-14 | Judge the backtest after age, position, league and starting price | Young and cheap players rise anyway, so raw growth would flatter the model | Raw value growth only |
 | 2026-10-14 | Leave goalkeepers out of the value model | xG, xA and xT say little about keepers | Keep them (noise) |
+| 2026-10-19 | Publish the website as a static site on GitHub Pages, reading exported JSON | The data is one finished season, so a live database adds cost and a 30 to 60 second cold start on free hosts. A static site is free, instant and never sleeps | Render (API) + Neon (Postgres) + Vercel (web) |
+| 2026-10-19 | Keep the FastAPI + Postgres backend, tested in CI against a real Postgres | Shows backend skills and serves the same fields as the site, for anyone running the full stack | Drop the API |
+| 2026-10-19 | API tests use a separate `upf_test` database | Tests must never wipe the real data | Mock the database (would not test the SQL) |
+| 2026-10-19 | HashRouter for page links | GitHub Pages cannot route deep links like /player/123 on its own | Custom 404 redirect trick |

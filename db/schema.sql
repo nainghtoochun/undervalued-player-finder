@@ -50,3 +50,15 @@ CREATE TABLE IF NOT EXISTS player_value_scores (
 
 CREATE INDEX IF NOT EXISTS idx_scores_rank ON player_value_scores (gap_rank);
 CREATE INDEX IF NOT EXISTS idx_metrics_xt ON player_season_metrics (xt_p90 DESC);
+
+-- small key/value store for model and backtest summaries shown on the website
+CREATE TABLE IF NOT EXISTS app_meta (
+    key    TEXT PRIMARY KEY,
+    value  JSONB NOT NULL
+);
+
+-- one row per player: the league spell where he played the most minutes
+CREATE OR REPLACE VIEW player_main_season AS
+SELECT DISTINCT ON (player_id) *
+FROM player_season_metrics
+ORDER BY player_id, minutes DESC;

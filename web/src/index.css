@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+/* Colour tokens. Light first, then dark. Chart colours follow the dataviz palette. */
+:root {
+  --surface: #fcfcfb;
+  --panel: #ffffff;
+  --ink: #0b0b0b;
+  --ink-2: #52514e;
+  --ink-3: #8a8984;
+  --line: #e6e5e1;
+  --accent: #2a78d6;
+  --accent-soft: #e8f1fc;
+  --series-2: #eb6834;
+  --good: #1f8a4c;
+  --bad: #c2410c;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface: #141413;
+    --panel: #1d1d1c;
+    --ink: #f0efec;
+    --ink-2: #c3c2b7;
+    --ink-3: #8f8e86;
+    --line: #2e2e2c;
+    --accent: #3987e5;
+    --accent-soft: #1b2a3d;
+    --series-2: #d95926;
+    --good: #4cc27f;
+    --bad: #f0844f;
+    color-scheme: dark;
+  }
+}
+
+@theme inline {
+  --color-surface: var(--surface);
+  --color-panel: var(--panel);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-series-2: var(--series-2);
+  --color-good: var(--good);
+  --color-bad: var(--bad);
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+}

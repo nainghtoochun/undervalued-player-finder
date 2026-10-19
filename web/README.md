@@ -1,15 +1,23 @@
 # Web frontend
 
-Create the app here in week 4:
+React + TypeScript + Vite + Tailwind + Recharts. Three pages: Home, Explorer and a page per player, plus Method.
+
+The site reads JSON files from `public/data/`, written by `python -m pipeline.export_web`.
+So it needs no server and loads instantly on GitHub Pages.
+
+## Run it
 
 ```bash
-npm create vite@latest . -- --template react-ts
-npm install
-npm install -D tailwindcss @tailwindcss/vite
-npm install recharts
+cd web
+npm install        # first time only
+npm run dev        # http://localhost:5173
 ```
 
-Pages
-1. Home with the top 10 bargains and the backtest headline.
-2. Explorer with filters (league, position, max value) and a value vs predicted value scatter plot.
-3. Player page with metrics, percentile bars against the same position, and an xT pitch heatmap.
+## Build
+
+```bash
+npm run build      # type checks, then writes dist/
+npm run preview    # serve dist/ locally
+```
+
+GitHub Actions builds and publishes the site on every push to `main` (see `.github/workflows/deploy.yml`).

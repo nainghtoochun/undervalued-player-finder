@@ -121,9 +121,9 @@ Plan on about 10 to 12 hours a week alongside classes.
 - Done when the backtest number exists, whatever it says
 
 ### Week 4 (Nov 3 to Nov 9) Ship it
-- [ ] Finish the API endpoints (`/players`, `/players/{id}`, `/bargains`)
-- [ ] Build the three pages (Home, Explorer, Player)
-- [ ] Deploy DB, API and web
+- [x] Finish the API endpoints (`/players`, `/players/{id}`, `/bargains`)
+- [x] Build the three pages (Home, Explorer, Player)
+- [ ] Deploy the website (GitHub Pages). The API and Postgres run locally with Docker
 - [ ] README with live link, demo GIF, diagram and key results
 - Done when a stranger can open the link and use it
 

@@ -5,6 +5,7 @@ Run: python -m pipeline.load_db   (needs `docker compose up -d` first)
 Every run empties the tables and reloads them, so it is safe to repeat.
 The connection comes from DATABASE_URL (see .env.example).
 """
+import json
 import os
 
 import pandas as pd
@@ -60,17 +61,26 @@ def build_tables() -> dict[str, pd.DataFrame]:
         "gap_rank": scores["log_gap"].rank(ascending=False, method="first").astype(int),
         "value_2018_eur": scores["value_2018"].astype("Int64"),
     })
+    report = json.loads((PROCESSED / "value_model_report.json").read_text())
+    quintiles = pd.read_csv(PROCESSED / "backtest_by_quintile.csv").to_dict(orient="records")
+    meta = pd.DataFrame({"key": ["value_model", "backtest", "backtest_by_quintile"],
+                         "value": [json.dumps(report["model"]), json.dumps(report["backtest"]),
+                                   json.dumps(quintiles)]})
     return {"players": players, "player_season_metrics": season_metrics,
-            "valuations": valuations, "player_value_scores": value_scores}
+            "valuations": valuations, "player_value_scores": value_scores, "app_meta": meta}
 
 
 def load(engine, tables: dict[str, pd.DataFrame]) -> None:
     with engine.begin() as conn:  # one transaction: all tables load, or none do
         conn.execute(text((ROOT / "db" / "schema.sql").read_text()))
-        conn.execute(text("TRUNCATE player_value_scores, player_season_metrics, valuations, players"))
+        conn.execute(text("TRUNCATE app_meta, player_value_scores, player_season_metrics, valuations, players"))
         for name in ["players", "player_season_metrics", "valuations", "player_value_scores"]:
             tables[name].to_sql(name, conn, if_exists="append", index=False, method="multi", chunksize=2000)
             print(f"  {name}: {len(tables[name]):,} rows")
+        for row in tables["app_meta"].itertuples():
+            conn.execute(text("INSERT INTO app_meta (key, value) VALUES (:k, CAST(:v AS JSONB))"),
+                         {"k": row.key, "v": row.value})
+        print(f"  app_meta: {len(tables['app_meta'])} rows")
 
 
 if __name__ == "__main__":

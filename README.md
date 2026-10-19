@@ -10,21 +10,28 @@ Players the model flagged as cheap in summer 2016 gained **47% more market value
 
 ![Backtest](docs/img/backtest.png)
 
-> Live demo coming in week 4. See `BLUEPRINT.md` for the full plan.
+**Live site:** https://nainghtoochun.github.io/undervalued-player-finder/
+
+![Home page](docs/img/site_home.png)
 
 ## Run locally
 
 ```bash
 python -m venv .venv
-.venv\Scripts\activate          # Windows
+.venv\Scripts\activate                    # Windows
 pip install -r requirements.txt
-docker compose up -d            # starts Postgres
-python -m pipeline.ingest_statsbomb   # all five leagues, about 15 to 20 minutes
-python -m pipeline.ingest_transfermarkt   # market values, a minute or two
-python -m pipeline.run_all            # xG, xT, player table, matching, value model, backtest
-docker compose up -d                 # Postgres
+python -m pipeline.ingest_statsbomb         # all five leagues, 45 to 75 minutes
+python -m pipeline.ingest_transfermarkt     # market values, a minute or two
+python -m pipeline.run_all                  # xG, xT, player table, matching, value model, backtest
+python -m pipeline.export_web               # JSON files for the website
+
+# website (needs Node.js)
+cd web && npm install && npm run dev        # http://localhost:5173
+
+# database and API (needs Docker)
+docker compose up -d
 python -m pipeline.load_db
-uvicorn api.main:app --reload
+uvicorn api.main:app --reload               # http://localhost:8000/docs
 ```
 
 ## Structure
@@ -32,9 +39,9 @@ uvicorn api.main:app --reload
 | Folder | What lives there |
 | --- | --- |
 | `pipeline/` | Data download, xG model, xT model, player metrics, value model, DB loading |
-| `api/` | FastAPI backend that serves players and bargains |
-| `web/` | React + Vite + Tailwind frontend |
+| `api/` | FastAPI backend on Postgres: `/players`, `/players/{id}`, `/bargains`, `/summary` |
+| `web/` | React, TypeScript, Tailwind and Recharts site, published to GitHub Pages |
 | `db/` | Postgres schema |
 | `notebooks/` | Exploration only. Final logic always moves into `pipeline/` |
-| `tests/` | Unit tests for the models and metrics |
+| `tests/` | 34 tests: models, metrics, matching, backtest, and the API against a real Postgres |
 | `docs/` | Design decisions and the findings write-up |
