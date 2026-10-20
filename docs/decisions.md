@@ -26,3 +26,5 @@ Write one short entry each time you make a real choice. Interviewers love this f
 | 2026-10-19 | Keep the FastAPI + Postgres backend, tested in CI against a real Postgres | Shows backend skills and serves the same fields as the site, for anyone running the full stack | Drop the API |
 | 2026-10-19 | API tests use a separate `upf_test` database | Tests must never wipe the real data | Mock the database (would not test the SQL) |
 | 2026-10-19 | HashRouter for page links | GitHub Pages cannot route deep links like /player/123 on its own | Custom 404 redirect trick |
+| 2026-10-20 | Rewrite the headline after an ablation test | A model without xG, xA and xT found bargains just as well, so the old wording overstated what the advanced stats do | Keep the old headline (would not survive an interview question) |
+| 2026-10-20 | Show 'about right' for value gaps between -20% and +20% | A +4% gap (Neymar) was labelled 'cheap', which is misleading given a typical price error of about 49% | Label every positive gap as cheap |

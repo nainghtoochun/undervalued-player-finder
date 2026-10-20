@@ -9,6 +9,8 @@ STEPS = [
     "pipeline.player_metrics",  # week 2: xT grid and per 90 player table
     "pipeline.match_players",   # week 3: link StatsBomb players to Transfermarkt
     "pipeline.value_model",     # week 3: fair value, value gap and the 2018 backtest
+    "pipeline.ablation",        # honest check: do xG, xA and xT really help find bargains?
+    "pipeline.export_web",      # week 4: JSON files for the website
     # loading into Postgres is separate: docker compose up -d, then python -m pipeline.load_db
 ]
 

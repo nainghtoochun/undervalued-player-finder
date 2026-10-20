@@ -69,3 +69,22 @@ After accounting for age, position, league and starting price, flagged players g
 - Part of the effect may be prices that were simply too low by chance moving back up. Controlling for starting price reduces but does not remove this.
 - One season of stats, so a lucky season can look like a bargain.
 - Spearman correlation between value gap and extra growth across all players is only 0.10. The signal is in the extreme tail, not everywhere.
+
+## Honest check (after week 4)
+
+Question: is the +47% backtest result coming from the advanced stats, or from something simpler?
+`python -m pipeline.ablation` rebuilds the fair value with fewer inputs and runs the same backtest.
+
+| Fair value built from | R2 on 2016 prices | Top 25 | Top 50 (95% range) | Top 100 |
+| --- | --- | --- | --- | --- |
+| Full model (xG, xA, xT + minutes, age, position, league) | 0.62 | +73% | +47% (+19% to +81%) | +25% |
+| No xG, xA or xT (minutes, age, position, league) | 0.54 | +83% | +62% (+33% to +102%) | +32% |
+| No stats at all (age, position, league) | 0.47 | +53% | +42% (+16% to +77%) | +22% |
+| Random ranking (placebo) | none | -3% | +1% (-15% to +21%) | +8% |
+
+**What it means.**
+- The approach works. Every fair value model beats a random list by a wide margin.
+- The advanced stats do not make the top of the list better. A model without them finds bargains as well or better. Most of the effect comes from players who were cheap for their age, position and minutes, and from low prices bouncing back.
+- The advanced stats still carry a separate signal. Stats premium = log(full fair value) minus log(simple fair value), the part of fair value that comes only from xG, xA and xT. Among players the simple model rated the same, those in the better half for stats premium gained about **+10%** more value by 2018. A regression of extra growth on simple gap and stats premium gives **+11%** (95% range +5% to +18%) for a +0.5 premium, roughly going from below-average to top-10% advanced stats.
+
+**Updated claim.** Players priced low for their profile in 2016 rose 40 to 60% more than similar players by 2018. xG, xA and xT improve price prediction and add a smaller, separate edge of about 10%.

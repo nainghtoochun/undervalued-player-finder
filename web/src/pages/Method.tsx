@@ -1,4 +1,5 @@
 import { Section } from "../components/ui";
+import type { Ablation } from "../data";
 import { pct, useData } from "../data";
 
 const REPO = "https://github.com/nainghtoochun/undervalued-player-finder";
@@ -43,12 +44,15 @@ export default function Method() {
         </Section>
       )}
 
+      {summary?.ablation && <HonestCheck ablation={summary.ablation} />}
+
       <Section title="Limits">
         <ul className="list-disc space-y-2 pl-5 text-ink-2">
           <li>Market values are Transfermarkt estimates, not real transfer fees.</li>
           <li>Some of the rise may be prices that were simply too low by chance moving back up.</li>
           <li>One season of stats, so a lucky season can look like a bargain.</li>
           <li>The signal is strong at the top of the list and weak across all players.</li>
+          <li>Most of the bargain-finding comes from simple facts (price, age, minutes), not the advanced stats. See the honest check above.</li>
           <li>The free Bundesliga data only covers Bayer Leverkusen, so the Bundesliga trains the models but is not ranked.</li>
         </ul>
       </Section>
@@ -61,5 +65,51 @@ export default function Method() {
         </p>
       </Section>
     </div>
+  );
+}
+
+function HonestCheck({ ablation }: { ablation: Ablation }) {
+  const sp = ablation.stats_premium;
+  return (
+    <Section title="Honest check: do xG, xA and xT really find bargains?"
+      subtitle="The same backtest, with the fair value rebuilt from fewer inputs.">
+      <div className="overflow-x-auto rounded-xl border border-line bg-panel">
+        <table className="num w-full min-w-[560px] text-sm">
+          <thead className="border-b border-line text-left text-xs uppercase tracking-wide text-ink-3">
+            <tr>
+              <th className="px-3 py-2 font-medium">Fair value built from</th>
+              <th className="px-3 py-2 text-right font-medium">Explains 2016 prices (R²)</th>
+              <th className="px-3 py-2 text-right font-medium">Top 50 extra rise by 2018</th>
+            </tr>
+          </thead>
+          <tbody>
+            {ablation.variants.map((v, i) => (
+              <tr key={v.inputs} className={`border-b border-line last:border-0 ${i === 0 ? "font-medium" : ""}`}>
+                <td className="px-3 py-2">{v.inputs}</td>
+                <td className="px-3 py-2 text-right">{v.r2_log_value == null ? "none" : v.r2_log_value.toFixed(2)}</td>
+                <td className="px-3 py-2 text-right">
+                  {pct(v.top50_extra)} <span className="text-xs text-ink-3">({pct(v.top50_low)} to {pct(v.top50_high)})</span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="mt-4 space-y-3 text-ink-2">
+        <p>
+          <span className="font-medium text-ink">What this shows.</span> Any fair value model beats a random list by a
+          wide margin, so the approach works. But a model with no xG, xA or xT finds bargains just as well. Most of the
+          effect comes from players who were cheap for their age, position and minutes, and from low prices bouncing back.
+        </p>
+        <p>
+          <span className="font-medium text-ink">Where the advanced stats do help.</span> They explain prices better
+          (R² up from 0.54 to 0.62). And among players the simple model rated the same, those in the better half for
+          xG, xA and xT gained about {pct(sp.high_minus_low_premium_within_fifths)} more value by 2018. A regression
+          agrees: going from below-average to top-10% advanced stats is worth about{" "}
+          {pct(sp.extra_growth_per_half_log_premium)} extra growth (95% range {pct(sp.ci95[0])} to {pct(sp.ci95[1])}).
+          A smaller effect than the headline, but a real one.
+        </p>
+      </div>
+    </Section>
   );
 }

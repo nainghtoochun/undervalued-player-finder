@@ -71,3 +71,24 @@ def test_backtest_finds_a_planted_signal(seed):
     summary, by_q = backtest(df, top_n=40, n_boot=200)
     assert summary["extra_growth_ci95"][0] > 0
     assert by_q["extra_growth_log"].is_monotonic_increasing
+
+
+def test_stats_premium_test_finds_a_planted_effect():
+    from pipeline.ablation import stats_premium_test
+
+    rng = np.random.default_rng(0)
+    n = 600
+    v16 = np.exp(rng.normal(15, 1, n))
+    simple_gap = rng.normal(0, 0.5, n)
+    premium = rng.normal(0, 0.35, n)  # extra fair value that comes only from xG, xA and xT
+    base = pd.DataFrame({
+        "player_id": range(n), "value_2016": v16, "age": rng.uniform(19, 34, n),
+        "position_group": rng.choice(["DEF", "MID", "FWD"], n), "league": rng.choice(["A", "B"], n),
+        "value_2018": v16 * np.exp(0.3 * premium + rng.normal(0, 0.2, n)),  # players with better stats rise
+    })
+    base["age_sq"] = base["age"] ** 2
+    simple = base.assign(log_gap=simple_gap, predicted_value_eur=v16 * np.exp(simple_gap))
+    full = base.assign(log_gap=simple_gap + premium, predicted_value_eur=v16 * np.exp(simple_gap + premium))
+    result = stats_premium_test(full, simple, n_boot=200)
+    assert result["ci95"][0] > 0
+    assert result["high_minus_low_premium_within_fifths"] > 0

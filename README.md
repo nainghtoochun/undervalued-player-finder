@@ -1,12 +1,14 @@
 # Undervalued Player Finder
 
-Finds soccer players whose on-ball contribution is worth more than their market value.
+Finds soccer players whose market price was low for what they did on the pitch, and checks two years later whether the market caught up.
 
 Built on StatsBomb open event data (2015/16 Premier League, La Liga, Serie A, Ligue 1, plus Leverkusen's Bundesliga matches) and Transfermarkt market values. It uses a custom expected goals (xG) model and an Expected Threat (xT) model, then checks its picks against what actually happened to those players' values in the next two years.
 
 ## Headline result
 
-Players the model flagged as cheap in summer 2016 gained **47% more market value by 2018** than similar players (same age, position, league and starting price). 95% range +19% to +81%. Hits include Luis Alberto (EUR 4m to EUR 35m) and Cristiano Piccini (EUR 0.7m to EUR 7.5m). Details and limitations in `docs/findings.md`.
+The 50 players the model rated cheapest in summer 2016 gained **47% more market value by 2018** than similar players (same age, position, league and starting price), 95% range +19% to +81%. A random list of 50 players gained +1%. Hits include Luis Alberto (EUR 4m to EUR 35m) and Cristiano Piccini (EUR 0.7m to EUR 7.5m).
+
+**Honest check.** I rebuilt the model without xG, xA and xT, and it found bargains just as well (+62%). So most of the effect comes from spotting players priced low for their age, position and minutes, not from the advanced stats. The advanced stats still matter. They explain prices better (R² 0.54 to 0.62), and among players the simple model rated the same, those with better xG, xA and xT gained about 10% more value. Full details in `docs/findings.md`.
 
 ![Backtest](docs/img/backtest.png)
 

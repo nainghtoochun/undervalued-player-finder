@@ -99,27 +99,30 @@ def build_dataset() -> pd.DataFrame:
 
 # ---------- model ----------
 
-def _prep(scale: bool) -> ColumnTransformer:
+def _prep(scale: bool, numeric: list[str]) -> ColumnTransformer:
     num = StandardScaler() if scale else "passthrough"
-    return ColumnTransformer([("num", num, NUMERIC),
+    return ColumnTransformer([("num", num, numeric),
                               ("cat", OneHotEncoder(handle_unknown="ignore"), CATEGORICAL)])
 
 
-def candidate_models() -> dict:
+def candidate_models(numeric: list[str] = NUMERIC) -> dict:
     return {
-        "ridge": make_pipeline(_prep(scale=True), RidgeCV(alphas=np.logspace(-2, 3, 20))),
-        "gradient boosting": make_pipeline(_prep(scale=False), HistGradientBoostingRegressor(
+        "ridge": make_pipeline(_prep(scale=True, numeric=numeric), RidgeCV(alphas=np.logspace(-2, 3, 20))),
+        "gradient boosting": make_pipeline(_prep(scale=False, numeric=numeric), HistGradientBoostingRegressor(
             max_iter=400, learning_rate=0.04, max_leaf_nodes=15, min_samples_leaf=20,
             l2_regularization=1.0, random_state=0)),
     }
 
 
-def fit_value_model(df: pd.DataFrame, seed: int = 0) -> tuple[pd.DataFrame, dict]:
+def fit_value_model(df: pd.DataFrame, seed: int = 0, numeric: list[str] = NUMERIC,
+                    models: tuple[str, ...] = ("ridge", "gradient boosting")) -> tuple[pd.DataFrame, dict]:
     """Out-of-fold fair value for every player. Returns the scored table and a report."""
-    X, y = df[NUMERIC + CATEGORICAL], np.log(df["value_2016"])
+    X, y = df[numeric + CATEGORICAL], np.log(df["value_2016"])
     folds = KFold(n_splits=5, shuffle=True, random_state=seed)
     report, preds = {}, {}
-    for name, model in candidate_models().items():
+    for name, model in candidate_models(numeric).items():
+        if name not in models:
+            continue
         p = cross_val_predict(model, X, y, cv=folds)
         preds[name] = p
         report[name] = {"r2_log_value": r2_score(y, p), "mae_log_value": mean_absolute_error(y, p),

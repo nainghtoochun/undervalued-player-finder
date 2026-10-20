@@ -55,6 +55,27 @@ export interface Summary {
   };
   backtest_by_quintile: Quintile[];
   value_model: Record<string, { r2_log_value: number; median_abs_pct_error: number } | string>;
+  ablation: Ablation | null;
+}
+
+export interface AblationRow {
+  inputs: string;
+  r2_log_value: number | null;
+  top25_extra: number;
+  top50_extra: number;
+  top50_low: number;
+  top50_high: number;
+  top100_extra: number;
+}
+
+export interface Ablation {
+  variants: AblationRow[];
+  stats_premium: {
+    players: number;
+    extra_growth_per_half_log_premium: number;
+    ci95: [number, number];
+    high_minus_low_premium_within_fifths: number;
+  };
 }
 
 export type History = Record<string, [string, number][]>;

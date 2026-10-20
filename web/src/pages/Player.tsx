@@ -15,6 +15,13 @@ const PERCENTILE_LABELS: [keyof Percentiles, string, string][] = [
 ];
 const SEASON_END = Date.parse("2016-08-31");
 
+function gapNote(gap: number | null): string {
+  if (gap == null) return "";
+  if (gap > 0.2) return "Model says he was cheap";
+  if (gap < -0.2) return "Model says he was expensive";
+  return "Model says the price was about right";
+}
+
 function PercentileBar({ label, help, value }: { label: string; help: string; value: number | null }) {
   const v = value ?? 0;
   return (
@@ -84,8 +91,9 @@ export default function PlayerPage() {
         <div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
           <StatTile label="Market price, summer 2016" value={euro(p.value_2016_eur)} />
           <StatTile label="Fair value from his stats" value={euro(p.predicted_value_eur)}
-            note={(p.value_gap_pct ?? 0) >= 0 ? "Model says he was cheap" : "Model says he was expensive"} />
-          <StatTile label="Value gap" value={pct(p.value_gap_pct)} tone={(p.value_gap_pct ?? 0) >= 0 ? "good" : "bad"}
+            note={gapNote(p.value_gap_pct)} />
+          <StatTile label="Value gap" value={pct(p.value_gap_pct)}
+            tone={(p.value_gap_pct ?? 0) > 0.2 ? "good" : (p.value_gap_pct ?? 0) < -0.2 ? "bad" : undefined}
             note="Fair value vs price" />
           <StatTile label="Market price, summer 2018" value={euro(p.value_2018_eur)}
             tone={rise == null ? undefined : rise >= 0 ? "good" : "bad"}

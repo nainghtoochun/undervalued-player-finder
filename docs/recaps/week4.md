@@ -45,6 +45,11 @@ Weeks 1 to 3 built the engine. Week 4 built the showroom.
 ## Interview story from this week
 "I first planned to host the API and database on free cloud servers. Then I realised the data is one finished season, so a live database only adds a 30 second cold start for recruiters. I published a static site that loads instantly, and kept the API and Postgres for the full local stack, tested in CI."
 
+## Honest check (added after week 4)
+A question I asked myself: "Is my model real, or am I fooling myself?" So I rebuilt it without xG, xA and xT and ran the same backtest. It found bargains just as well. Most of the +47% comes from spotting players who were cheap for their age, position and minutes. The advanced stats still help. They explain prices better, and among players who looked equally cheap, the ones with better xG, xA and xT gained about 10% more. I rewrote the headline on the README and the website to say exactly that.
+
+**Interview story.** "My first headline said advanced stats found bargains. I tested it by removing them, and the result barely changed. So I rewrote the claim to match the evidence, and found the smaller effect the stats really do have. A random list scored +1%, so the method itself holds up."
+
 ## Next up (polish, Dec 20 to Jan 4)
 - [ ] Short blog post from `docs/findings.md`, shared on LinkedIn
 - [ ] Resume bullet with the real numbers

@@ -83,6 +83,8 @@ def build_summary(players: pd.DataFrame) -> dict:
         "backtest": report["backtest"],
         "backtest_by_quintile": quintiles.to_dict(orient="records"),
         "value_model": report["model"],
+        "ablation": json.loads((PROCESSED / "ablation.json").read_text())
+        if (PROCESSED / "ablation.json").exists() else None,
     }
 
 

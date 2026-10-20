@@ -53,11 +53,14 @@ export default function Home() {
           Which players was the market getting wrong?
         </h1>
         <p className="mt-4 max-w-2xl text-lg text-ink-2">
-          A model scores every player on what he actually did with the ball, then compares that with his price. In
-          summer 2016 it flagged 50 players as cheap.{" "}
+          A model puts a fair price on every player from his stats, age, position and league, then compares it with
+          his market price. The 50 players it rated cheapest in summer 2016{" "}
           <span className="font-medium text-ink">
-            Two years later their value had risen {pct(extra, 0, false)} more than similar players.
-          </span>
+            gained {pct(extra, 0, false)} more value by 2018 than similar players.
+          </span>{" "}
+          Most of that comes from spotting players priced low for their profile. The advanced stats (xG, xA, xT) add a
+          smaller, separate edge.{" "}
+          <Link to="/method" className="text-accent underline">See the honest check</Link>.
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
           <Link to="/explore" className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:opacity-90">
